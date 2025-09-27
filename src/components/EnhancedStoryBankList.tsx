@@ -273,10 +273,6 @@ export default function EnhancedStoryBankList() {
         </div>
         
         <div className="flex gap-2">
-          <Button variant="outline" onClick={addNewStory}>
-            <Plus className="w-4 h-4 mr-2" />
-            Ajouter
-          </Button>
           <Button 
             onClick={generateTenIdeas} 
             disabled={generatingIdeas}
