@@ -8,6 +8,7 @@ interface AppState {
   storyBank: Story[];
   outputsByStoryId: Record<string, Outputs>;
   assignments: Assignment;
+  favorites: string[];
   
   // Onboarding
   isOnboardingComplete: boolean;
@@ -19,12 +20,13 @@ interface AppState {
   activeTab: "story-bank" | "calendar" | "output";
   selectedStoryId?: string;
   selectedOutputFormat?: "linkedin" | "instagram" | "tiktok" | "brief";
+  generationLoading: string | null;
   
   // Actions
   setProfile: (profile: Partial<UserProfile>) => void;
   setTranscript: (transcript: TranscriptChunk[]) => void;
   setStoryBank: (stories: Story[]) => void;
-  setOutputs: (storyId: string, outputs: Outputs) => void;
+  setOutputs: (storyId: string, outputs: Partial<Outputs>) => void;
   setAssignments: (assignments: Assignment | ((prev: Assignment) => Assignment)) => void;
   updateStory: (story: Story) => void;
   setLoading: (loading: boolean) => void;
@@ -36,6 +38,8 @@ interface AppState {
   setOnboardingStep: (step: 1 | 1.5 | 2 | 3) => void;
   restartOnboarding: () => void;
   reset: () => void;
+  toggleFavorite: (storyId: string) => void;
+  setGenerationLoading: (storyId: string | null) => void;
 }
 
 const initialProfile: UserProfile = {
@@ -94,19 +98,25 @@ const loadPersistedData = () => {
     const stories = localStorage.getItem('onetake-stories');
     const onboardingComplete = localStorage.getItem('onetake-onboarding-complete');
     const profile = localStorage.getItem('onetake-profile');
+    const favorites = localStorage.getItem('onetake-favorites');
+    const outputs = localStorage.getItem('onetake-outputs');
     
     return {
       assignments: assignments ? JSON.parse(assignments) : {},
       stories: stories ? JSON.parse(stories).map(migrateStory) : [],
       isOnboardingComplete: onboardingComplete === 'true',
-      profile: profile ? JSON.parse(profile) : initialProfile
+      profile: profile ? JSON.parse(profile) : initialProfile,
+      favorites: favorites ? JSON.parse(favorites) : [],
+      outputsByStoryId: outputs ? JSON.parse(outputs) : {}
     };
   } catch {
     return {
       assignments: {},
       stories: [],
       isOnboardingComplete: false,
-      profile: initialProfile
+      profile: initialProfile,
+      favorites: [],
+      outputsByStoryId: {}
     };
   }
 };
@@ -127,8 +137,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   profile: persistedData.profile,
   transcript: [],
   storyBank: persistedData.stories,
-  outputsByStoryId: {},
+  outputsByStoryId: persistedData.outputsByStoryId,
   assignments: persistedData.assignments,
+  favorites: persistedData.favorites,
   isOnboardingComplete: persistedData.isOnboardingComplete,
   onboardingStep: 1,
   loading: false,
@@ -136,6 +147,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeTab: "story-bank",
   selectedStoryId: undefined,
   selectedOutputFormat: undefined,
+  generationLoading: null,
   
   // Actions
   setProfile: (profileUpdate) => {
@@ -151,13 +163,14 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ storyBank });
   },
   
-  setOutputs: (storyId, outputs) =>
-    set((state) => ({
-      outputsByStoryId: {
-        ...state.outputsByStoryId,
-        [storyId]: outputs
-      }
-    })),
+  setOutputs: (storyId, outputs) => {
+    const newOutputsByStoryId = {
+      ...get().outputsByStoryId,
+      [storyId]: { ...get().outputsByStoryId[storyId], ...outputs }
+    };
+    saveToLocalStorage('onetake-outputs', newOutputsByStoryId);
+    set({ outputsByStoryId: newOutputsByStoryId });
+  },
 
   setAssignments: (assignments: Assignment | ((prev: Assignment) => Assignment)) => {
     const newAssignments = typeof assignments === 'function' 
@@ -201,17 +214,31 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
   
+  toggleFavorite: (storyId) => {
+    const currentFavorites = get().favorites;
+    const newFavorites = currentFavorites.includes(storyId)
+      ? currentFavorites.filter(id => id !== storyId)
+      : [...currentFavorites, storyId];
+    saveToLocalStorage('onetake-favorites', newFavorites);
+    set({ favorites: newFavorites });
+  },
+
+  setGenerationLoading: (storyId) => set({ generationLoading: storyId }),
+
   reset: () => {
     localStorage.removeItem('onetake-assignments');
     localStorage.removeItem('onetake-stories');
     localStorage.removeItem('onetake-onboarding-complete');
     localStorage.removeItem('onetake-profile');
+    localStorage.removeItem('onetake-favorites');
+    localStorage.removeItem('onetake-outputs');
     set({
       profile: initialProfile,
       transcript: [],
       storyBank: [],
       outputsByStoryId: {},
       assignments: {},
+      favorites: [],
       isOnboardingComplete: false,
       onboardingStep: 1,
       loading: false,
@@ -219,6 +246,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       activeTab: "story-bank",
       selectedStoryId: undefined,
       selectedOutputFormat: undefined,
+      generationLoading: null,
     });
   },
 }));
