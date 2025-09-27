@@ -30,13 +30,13 @@ export default function Index() {
                 <BookOpen className="w-4 h-4" />
                 Stories
               </TabsTrigger>
-              <TabsTrigger value="calendar" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Planning
-              </TabsTrigger>
               <TabsTrigger value="output" className="flex items-center gap-2">
                 <Zap className="w-4 h-4" />
                 Contenu
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Planning
               </TabsTrigger>
             </TabsList>
             
@@ -54,12 +54,12 @@ export default function Index() {
             <EnhancedStoryBankList />
           </TabsContent>
           
-          <TabsContent value="calendar" className="space-y-0">
-            <CalendarView />
-          </TabsContent>
-          
           <TabsContent value="output" className="space-y-0">
             <OutputTabs />
+          </TabsContent>
+          
+          <TabsContent value="calendar" className="space-y-0">
+            <CalendarView />
           </TabsContent>
         </Tabs>
       </main>
