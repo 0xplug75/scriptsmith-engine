@@ -195,8 +195,8 @@ export default function EnhancedStoryBankList() {
     updateStory(storyWithScore);
   };
 
-  const handleDeleteStory = (storyId: string) => {
-    setStoryBank(storyBank.filter(story => story.id !== storyId));
+  const handleDeleteStory = (story: Story) => {
+    setStoryBank(storyBank.filter(s => s.id !== story.id));
     toast({
       title: "Histoire supprimée",
       description: "Histoire retirée de votre banque"
@@ -300,7 +300,6 @@ export default function EnhancedStoryBankList() {
                 onEdit={handleEditStory}
                 onDelete={handleDeleteStory}
                 onDuplicate={handleDuplicateStory}
-                onGenerate={generateOutput}
                 onSuggestVariations={generateVariations}
               />
             </BentoItem>
