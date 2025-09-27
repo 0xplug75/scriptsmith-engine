@@ -45,7 +45,7 @@ export type LegacyStory = {
 export type Assignment = Record<string, string[]>;
 
 export type Outputs = {
-  linkedin?: string;
+  linkedin_post?: string;
   instagram_carousel?: string[];
   tiktok_script?: {
     duration_s: number;

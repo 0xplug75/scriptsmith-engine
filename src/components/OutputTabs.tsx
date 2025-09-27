@@ -125,8 +125,8 @@ export default function OutputTabs() {
                 </CardTitle>
                 <Button
                   size="sm"
-                  onClick={() => outputs.linkedin && copyToClipboard(outputs.linkedin, 'LinkedIn')}
-                  disabled={!outputs.linkedin}
+                  onClick={() => outputs.linkedin_post && copyToClipboard(outputs.linkedin_post, 'LinkedIn')}
+                  disabled={!outputs.linkedin_post}
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   Copy Post
@@ -134,16 +134,16 @@ export default function OutputTabs() {
               </div>
             </CardHeader>
             <CardContent>
-              {outputs.linkedin ? (
+              {outputs.linkedin_post ? (
                 <div className="space-y-4">
                   <div className="bg-muted p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                      {outputs.linkedin}
+                      {outputs.linkedin_post}
                     </pre>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>~{outputs.linkedin.split(' ').length} words</span>
-                    <span>~{Math.ceil(outputs.linkedin.length / 280)} tweets</span>
+                    <span>~{outputs.linkedin_post.split(' ').length} words</span>
+                    <span>~{Math.ceil(outputs.linkedin_post.length / 280)} tweets</span>
                   </div>
                 </div>
               ) : (

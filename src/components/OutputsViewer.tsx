@@ -34,12 +34,12 @@ export default function OutputsViewer({ storyId, children }: OutputsViewerProps)
     }
   };
 
-  const hasOutputs = outputs && (outputs.linkedin || outputs.instagram_carousel || outputs.tiktok_script);
+  const hasOutputs = outputs && (outputs.linkedin_post || outputs.instagram_carousel || outputs.tiktok_script);
 
   if (!hasOutputs) return null;
 
   const availableTabs = [];
-  if (outputs.linkedin) availableTabs.push('linkedin');
+  if (outputs.linkedin_post) availableTabs.push('linkedin');
   if (outputs.instagram_carousel) availableTabs.push('instagram');
   if (outputs.tiktok_script) availableTabs.push('tiktok');
 
@@ -59,7 +59,7 @@ export default function OutputsViewer({ storyId, children }: OutputsViewerProps)
         <div className="mt-6">
           <Tabs defaultValue={availableTabs[0]} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              {outputs.linkedin && (
+              {outputs.linkedin_post && (
                 <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
               )}
               {outputs.instagram_carousel && (
@@ -70,21 +70,21 @@ export default function OutputsViewer({ storyId, children }: OutputsViewerProps)
               )}
             </TabsList>
 
-            {outputs.linkedin && (
+            {outputs.linkedin_post && (
               <TabsContent value="linkedin" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">LinkedIn Post</h3>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => copyToClipboard(outputs.linkedin!)}
+                    onClick={() => copyToClipboard(outputs.linkedin_post!)}
                   >
                     <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 </div>
                 <Textarea
-                  value={outputs.linkedin}
+                  value={outputs.linkedin_post}
                   readOnly
                   className="min-h-[300px] resize-none"
                 />

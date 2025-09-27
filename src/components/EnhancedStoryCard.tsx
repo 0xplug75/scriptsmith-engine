@@ -47,7 +47,7 @@ export default function EnhancedStoryCard({ story, onEdit, onDelete, onDuplicate
   const isFavorite = favorites.includes(story.id);
   const isGenerating = generationLoading === story.id;
   const hasOutputs = outputsByStoryId[story.id] && 
-    (outputsByStoryId[story.id].linkedin || outputsByStoryId[story.id].instagram_carousel || outputsByStoryId[story.id].tiktok_script);
+    (outputsByStoryId[story.id].linkedin_post || outputsByStoryId[story.id].instagram_carousel || outputsByStoryId[story.id].tiktok_script);
 
   const handleSave = () => {
     updateStory(editedStory);

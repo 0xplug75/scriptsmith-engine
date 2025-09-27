@@ -2,7 +2,7 @@ import type { Outputs } from "./schemas";
 
 export function repurposeStoryMock(story: any): Outputs {
   return {
-    linkedin: `Hook: ${story.hook}\n\nContext: ${story.context}\nTurn: ${story.turning_point}\nLesson: ${story.moral}\n\nCTA: ${story.cta}\n#content #story`,
+    linkedin_post: `Hook: ${story.hook}\n\nContext: ${story.context}\nTurn: ${story.turning_point}\nLesson: ${story.moral}\n\nCTA: ${story.cta}\n#content #story`,
     instagram_carousel: [
       story.hook,
       story.context.slice(0, 80),

@@ -20,8 +20,7 @@ export async function generateAllContent(storyId: string) {
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
-        story,
-        generate: ['linkedin', 'instagram', 'tiktok', 'brief_editor']
+        story
       })
     });
 
@@ -65,13 +64,12 @@ export async function generateLinkedIn(storyId: string) {
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
-        story,
-        generate: ['linkedin']
+        story
       })
     });
 
     const outputs = safeJSON<Outputs>(response);
-    setOutputs(storyId, { linkedin: outputs.linkedin });
+    setOutputs(storyId, { linkedin_post: outputs.linkedin_post });
     
     toast({
       title: "LinkedIn post generated!",
@@ -105,8 +103,7 @@ export async function generateInstagram(storyId: string) {
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
-        story,
-        generate: ['instagram']
+        story
       })
     });
 
@@ -145,8 +142,7 @@ export async function generateTikTok(storyId: string) {
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
-        story,
-        generate: ['tiktok']
+        story
       })
     });
 
