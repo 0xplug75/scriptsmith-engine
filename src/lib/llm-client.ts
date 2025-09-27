@@ -13,7 +13,7 @@ const GEMINI_API_KEY = 'AIzaSyDUHpYUbtoKVyCZLB3V2PUnq2Q3j1clkbY';
 
 export async function llmCall({ model, system, user, temperature = 0.7 }: LLMCallParams): Promise<string> {
   try {
-    const response = await fetch(`${API_ENDPOINT}/${model}:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`${API_ENDPOINT}/${(model === 'gemini-1.5-pro' ? 'gemini-1.5-flash' : model)}:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
