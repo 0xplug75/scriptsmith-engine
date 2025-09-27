@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import type { Story, Platform } from "@/lib/schemas";
 
 const PLATFORM_COLORS = {
-  Instagram: "bg-gradient-to-br from-pink-500 to-purple-600",
-  LinkedIn: "bg-gradient-to-br from-blue-600 to-blue-700",
-  TikTok: "bg-gradient-to-br from-black to-red-500",
-  YouTube: "bg-gradient-to-br from-red-500 to-red-600",
+  Instagram: "bg-gradient-to-br from-gray-500 to-gray-600",
+  LinkedIn: "bg-gradient-to-br from-gray-500 to-gray-600",
+  TikTok: "bg-gradient-to-br from-gray-500 to-gray-600",
+  YouTube: "bg-gradient-to-br from-gray-500 to-gray-600",
   Generic: "bg-gradient-to-br from-gray-500 to-gray-600"
 };
 
