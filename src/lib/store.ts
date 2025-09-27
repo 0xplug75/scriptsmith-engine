@@ -11,7 +11,7 @@ interface AppState {
   
   // Onboarding
   isOnboardingComplete: boolean;
-  onboardingStep: 1 | 2 | 3;
+  onboardingStep: 1 | 1.5 | 2 | 3;
   
   // UI
   loading: boolean;
@@ -33,7 +33,7 @@ interface AppState {
   setSelectedStory: (storyId?: string) => void;
   setSelectedOutputFormat: (format?: "linkedin" | "instagram" | "tiktok" | "brief") => void;
   setOnboardingComplete: (complete: boolean) => void;
-  setOnboardingStep: (step: 1 | 2 | 3) => void;
+  setOnboardingStep: (step: 1 | 1.5 | 2 | 3) => void;
   restartOnboarding: () => void;
   reset: () => void;
 }
@@ -52,15 +52,39 @@ const migrateStory = (story: any): Story => {
   }
   
   // Convert legacy format
-  return {
+  const migrated: Story = {
     id: story.id,
-    histoire: story.title || '',
-    conflit: '',
-    message: '',
+    histoire: story.title || story.hook || '',
+    conflit: story.conflict || '',
+    message: story.moral || story.message || '',
     platform: story.platform || 'Generic',
     color: story.color || '#3B82F6',
     tags: story.tags || []
   };
+
+  // Calculate score for bento grid sizing
+  migrated.score = calculateStoryScore(migrated);
+  
+  return migrated;
+};
+
+// Heuristic score calculation for bento grid sizing
+const calculateStoryScore = (story: Story): number => {
+  let score = 0;
+  
+  // Length of histoire contributes to score
+  score += story.histoire.length > 80 ? 0.2 : 0;
+  
+  // Presence of conflit adds to score
+  score += story.conflit ? 0.3 : 0;
+  
+  // Presence of message adds to score
+  score += story.message ? 0.3 : 0;
+  
+  // Tags contribute to score
+  score += (story.tags?.length || 0) > 0 ? 0.2 : 0;
+  
+  return score;
 };
 
 // Load persisted data from localStorage
@@ -166,7 +190,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ isOnboardingComplete: complete });
   },
   
-  setOnboardingStep: (step: 1 | 2 | 3) => set({ onboardingStep: step }),
+  setOnboardingStep: (step: 1 | 1.5 | 2 | 3) => set({ onboardingStep: step }),
   
   restartOnboarding: () => {
     saveToLocalStorage('onetake-onboarding-complete', false);

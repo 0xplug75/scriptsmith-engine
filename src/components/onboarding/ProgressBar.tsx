@@ -2,7 +2,9 @@ import { useAppStore } from '@/lib/store';
 
 export default function ProgressBar() {
   const { onboardingStep } = useAppStore();
-  const progress = (onboardingStep / 3) * 100;
+  // Account for 1.5 step (transcript)
+  const normalizedStep = onboardingStep === 1.5 ? 1.5 : onboardingStep;
+  const progress = (normalizedStep / 3) * 100;
 
   return (
     <div className="w-full bg-muted rounded-full h-2">

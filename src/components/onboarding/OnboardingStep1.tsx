@@ -27,8 +27,8 @@ export default function OnboardingStep1() {
   };
 
   const handleNext = () => {
-    setProfile(localProfile);
-    setOnboardingStep(2);
+    setProfile({ ...profile, ...localProfile });
+    setOnboardingStep(1.5); // Go to transcript step
   };
 
   const canProceed = localProfile.name.trim() && localProfile.platforms.length > 0;

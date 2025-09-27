@@ -121,11 +121,9 @@ export default function DayCell({
             onDrop={(e) => handleItemDrop(e, index)}
             onDragOver={handleItemDragOver}
           >
-            <StoryCard
-              story={story}
-              draggable={false} // Handled by parent div
-              onEdit={onEditStory}
-            />
+            <div className="bg-accent/10 border border-accent/20 rounded px-2 py-1 text-xs font-medium text-accent truncate">
+              {story.histoire}
+            </div>
           </div>
         ))}
       </div>

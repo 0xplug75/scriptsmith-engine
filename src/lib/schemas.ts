@@ -21,6 +21,7 @@ export type Story = {
   platform: Platform;
   color: string;
   tags?: string[];
+  score?: number;     // heuristic score for bento sizing
 };
 
 // Legacy story type for migration
