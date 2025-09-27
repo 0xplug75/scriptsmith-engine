@@ -125,7 +125,7 @@ export default function OnboardingStep2Enhanced() {
     setSelectedStoryIds(newSelection);
   };
 
-  const handleGoToPlanner = () => {
+  const handleGoToPlanner = async () => {
     // Add selected stories to story bank
     const selectedStories = generatedStories.filter(story => 
       selectedStoryIds.has(story.id)
@@ -133,13 +133,23 @@ export default function OnboardingStep2Enhanced() {
     
     setStoryBank([...storyBank, ...selectedStories]);
     
+    // Generate content for all new stories
+    const { generateAllContent } = await import('@/lib/content-generator');
+    
+    // Generate content for each story sequentially to avoid overwhelming the system
+    for (const story of selectedStories) {
+      if (story.histoire && story.conflit && story.message) {
+        setTimeout(() => generateAllContent(story.id), 100);
+      }
+    }
+    
     // Complete onboarding
     setOnboardingComplete(true);
     setActiveTab('story-bank');
     
     toast({
       title: "Onboarding terminé!",
-      description: `${selectedStories.length} histoires ajoutées à votre banque.`
+      description: `${selectedStories.length} histoires ajoutées avec génération de contenu automatique`
     });
   };
 

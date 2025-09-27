@@ -186,13 +186,19 @@ export default function EnhancedStoryBankList() {
     setStoryBank([...storyBank, newStory]);
   };
 
-  const handleEditStory = (updatedStory: Story) => {
+  const handleEditStory = async (updatedStory: Story) => {
     // Recalculate score on edit
     const storyWithScore = {
       ...updatedStory,
       score: calculateStoryScore(updatedStory)
     };
     updateStory(storyWithScore);
+    
+    // If story has content, auto-generate content
+    if (updatedStory.histoire && updatedStory.conflit && updatedStory.message) {
+      const { generateAllContent } = await import('@/lib/content-generator');
+      generateAllContent(updatedStory.id);
+    }
   };
 
   const handleDeleteStory = (story: Story) => {

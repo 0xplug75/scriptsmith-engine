@@ -187,8 +187,14 @@ export default function StoryBankList() {
     setEditingStory(newStory.id);
   };
 
-  const handleEditStory = (updatedStory: Story) => {
+  const handleEditStory = async (updatedStory: Story) => {
     updateStory(updatedStory);
+    
+    // If story has content, auto-generate content
+    if (updatedStory.histoire && updatedStory.conflit && updatedStory.message) {
+      const { generateAllContent } = await import('@/lib/content-generator');
+      generateAllContent(updatedStory.id);
+    }
   };
 
   const handleDeleteStory = (storyId: string) => {

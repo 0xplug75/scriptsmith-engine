@@ -3,6 +3,52 @@ import { llmCall, REPURPOSE_ENGINE_SYSTEM, safeJSON } from './llm-client';
 import type { Story, Outputs, UserProfile } from './schemas';
 import { toast } from '@/hooks/use-toast';
 
+export async function generateAllContent(storyId: string) {
+  const { storyBank, profile, setOutputs, setGenerationLoading, generationLoading, setActiveTab, setSelectedStory, setSelectedOutputFormat } = useAppStore.getState();
+  
+  if (generationLoading) return;
+  
+  const story = storyBank.find(s => s.id === storyId);
+  if (!story) return;
+
+  try {
+    setGenerationLoading(storyId);
+    
+    // Generate content for all platforms at once
+    const response = await llmCall({
+      model: 'claude-3-5-sonnet',
+      system: REPURPOSE_ENGINE_SYSTEM,
+      user: JSON.stringify({
+        profile,
+        story,
+        generate: ['linkedin', 'instagram', 'tiktok', 'brief_editor']
+      })
+    });
+
+    const outputs = safeJSON<Outputs>(response);
+    setOutputs(storyId, outputs);
+    
+    // Automatically navigate to content page
+    setSelectedStory(storyId);
+    setSelectedOutputFormat('linkedin');
+    setActiveTab('output');
+    
+    toast({
+      title: "Contenu généré avec succès!",
+      description: "Tous les formats ont été créés et sont disponibles dans l'onglet Contenu"
+    });
+  } catch (error) {
+    console.error('Content generation error:', error);
+    toast({
+      title: "Échec de la génération",
+      description: "Veuillez réessayer",
+      variant: "destructive"
+    });
+  } finally {
+    setGenerationLoading(null);
+  }
+}
+
 export async function generateLinkedIn(storyId: string) {
   const { storyBank, profile, setOutputs, setGenerationLoading, generationLoading } = useAppStore.getState();
   
