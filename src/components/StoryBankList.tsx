@@ -8,7 +8,7 @@ import { Sparkles, Star, Copy, Edit, ExternalLink, Zap, BookOpen, Target, Trash2
 import type { Story, Outputs, Platform } from "@/lib/schemas";
 import { useToast } from "@/hooks/use-toast";
 import StoryCard from "./StoryCard";
-import StoryBankDropZone from "./StoryBankDropZone";
+import AddStoryOptions from "./AddStoryOptions";
 
 const PLATFORM_COLORS = {
   Instagram: "bg-gradient-to-br from-gray-500 to-gray-600",
@@ -285,7 +285,7 @@ export default function StoryBankList() {
       {/* Story Cards Grid with Drop Zone */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Drop Zone */}
-        <StoryBankDropZone onAddStory={addNewStory} />
+        <AddStoryOptions onAddStory={addNewStory} />
         
         {/* Story Cards */}
         {storyBank.map((story) => (

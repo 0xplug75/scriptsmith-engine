@@ -7,7 +7,7 @@ import { Sparkles, Star, Target, Plus, Lightbulb } from "lucide-react";
 import type { Story, Platform } from "@/lib/schemas";
 import { useToast } from "@/hooks/use-toast";
 import EnhancedStoryCard from "./EnhancedStoryCard";
-import StoryBankDropZone from "./StoryBankDropZone";
+import AddStoryOptions from "./AddStoryOptions";
 import { BentoGrid, BentoItem, getBentoSize } from "./BentoGrid";
 
 const PLATFORM_COLORS = {
@@ -292,7 +292,7 @@ export default function EnhancedStoryBankList() {
       <BentoGrid>
         {/* Drop Zone as first item */}
         <BentoItem size="S">
-          <StoryBankDropZone onAddStory={addNewStory} />
+          <AddStoryOptions onAddStory={addNewStory} />
         </BentoItem>
         
         {/* Story Cards */}
