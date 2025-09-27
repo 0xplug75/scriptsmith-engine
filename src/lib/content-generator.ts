@@ -16,7 +16,7 @@ export async function generateAllContent(storyId: string) {
     
     // Generate content for all platforms at once
     const response = await llmCall({
-      model: 'claude-3-5-sonnet',
+      model: 'gemini-1.5-pro',
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
@@ -61,7 +61,7 @@ export async function generateLinkedIn(storyId: string) {
     setGenerationLoading(storyId);
     
     const response = await llmCall({
-      model: 'claude-3-5-sonnet',
+      model: 'gemini-1.5-pro',
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
@@ -101,7 +101,7 @@ export async function generateInstagram(storyId: string) {
     setGenerationLoading(storyId);
     
     const response = await llmCall({
-      model: 'claude-3-5-sonnet',
+      model: 'gemini-1.5-pro',
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,
@@ -141,7 +141,7 @@ export async function generateTikTok(storyId: string) {
     setGenerationLoading(storyId);
     
     const response = await llmCall({
-      model: 'claude-3-5-sonnet',
+      model: 'gemini-1.5-pro',
       system: REPURPOSE_ENGINE_SYSTEM,
       user: JSON.stringify({
         profile,

@@ -89,7 +89,7 @@ export default function CreatorInterviewModal({ open, onOpenChange }: CreatorInt
       const systemPrompt = inputType === 'cv' ? CV_TO_STORIES_SYSTEM : TRANSCRIPT_TO_STORIES_SYSTEM;
 
       const response = await llmCall({
-        model: 'claude-3-5-sonnet',
+        model: 'gemini-1.5-pro',
         system: systemPrompt,
         user: JSON.stringify({
           profile,

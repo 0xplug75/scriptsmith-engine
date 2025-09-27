@@ -79,7 +79,7 @@ export default function StoryBankList() {
       });
 
       const response = await llmCall({
-        model: 'claude-3-5-sonnet',
+        model: 'gemini-1.5-pro',
         system: STORY_ENGINE_SYSTEM,
         user: payload,
         temperature: 0.8
@@ -127,7 +127,7 @@ export default function StoryBankList() {
       });
 
       const response = await llmCall({
-        model: 'claude-3-5-sonnet',
+        model: 'gemini-1.5-pro',
         system: REPURPOSE_ENGINE_SYSTEM,
         user: payload
       });

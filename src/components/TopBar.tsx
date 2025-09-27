@@ -5,7 +5,7 @@ import { Download, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export default function TopBar() {
-  const [model, setModel] = useState<'claude-3-5-sonnet' | 'claude-3-haiku'>('claude-3-5-sonnet');
+  const [model, setModel] = useState<'gemini-1.5-pro' | 'gemini-1.5-flash'>('gemini-1.5-pro');
   const { storyBank, outputsByStoryId, profile, transcript, reset } = useAppStore();
 
   const exportData = () => {
@@ -44,13 +44,13 @@ export default function TopBar() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Model:</span>
-              <Select value={model} onValueChange={(value: 'claude-3-5-sonnet' | 'claude-3-haiku') => setModel(value)}>
+              <Select value={model} onValueChange={(value: 'gemini-1.5-pro' | 'gemini-1.5-flash') => setModel(value)}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="claude-3-5-sonnet">Claude 3.5 Sonnet</SelectItem>
-                  <SelectItem value="claude-3-haiku">Claude 3 Haiku</SelectItem>
+                  <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+                  <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash</SelectItem>
                 </SelectContent>
               </Select>
             </div>

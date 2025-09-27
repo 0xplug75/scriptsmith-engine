@@ -55,7 +55,7 @@ export default function OnboardingStep1b() {
       setLoading(true);
       
       const response = await llmCall({
-        model: 'claude-3-5-sonnet',
+        model: 'gemini-1.5-pro',
         system: TRANSCRIPT_TO_STORIES_SYSTEM,
         user: JSON.stringify({
           profile,
@@ -93,7 +93,7 @@ export default function OnboardingStep1b() {
       setLoading(true);
       
       const response = await llmCall({
-        model: 'claude-3-5-sonnet',
+        model: 'gemini-1.5-pro',
         system: TRANSCRIPT_TO_SINGLE_STORY_SYSTEM,
         user: JSON.stringify({
           profile,
