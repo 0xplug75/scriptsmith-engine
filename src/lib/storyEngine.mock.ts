@@ -1,4 +1,4 @@
-import type { Story } from "./store";
+import type { Story } from "./schemas";
 
 export function generateStoryBankMock(profile: any, transcript_text: string): Story[] {
   const base: Story = {

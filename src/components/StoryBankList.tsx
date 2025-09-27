@@ -5,7 +5,7 @@ import { useAppStore } from "@/lib/store";
 import { llmCall, safeJSON, STORY_ENGINE_SYSTEM, REPURPOSE_ENGINE_SYSTEM } from "@/lib/llm-client";
 import { useEffect } from "react";
 import { Sparkles, Star, Copy, Edit, ExternalLink, Zap, BookOpen, Target } from "lucide-react";
-import type { Story, Outputs } from "@/lib/store";
+import type { Story, Outputs } from "@/lib/schemas";
 import { useToast } from "@/hooks/use-toast";
 
 const PLATFORM_COLORS = {

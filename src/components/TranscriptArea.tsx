@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppStore } from "@/lib/store";
 import { useState } from "react";
 import { FileText, Mic, Upload, Zap, ExternalLink } from "lucide-react";
-import type { TranscriptChunk } from "@/lib/store";
+import type { TranscriptChunk } from "@/lib/schemas";
 
 // Demo transcript for quick testing
 const DEMO_TRANSCRIPT = `I remember when I first started my business, I had absolutely no idea what I was doing. I was fresh out of college with a computer science degree, thinking I knew everything.

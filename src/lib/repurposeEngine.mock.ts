@@ -1,4 +1,4 @@
-import type { Outputs } from "./store";
+import type { Outputs } from "./schemas";
 
 export function repurposeStoryMock(story: any): Outputs {
   return {
