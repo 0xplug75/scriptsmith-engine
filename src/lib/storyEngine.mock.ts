@@ -1,31 +1,26 @@
 import type { Story } from "./schemas";
 
 export function generateStoryBankMock(profile: any, transcript_text: string): Story[] {
-  const base: Story = {
-    id: "s1",
-    title: "How I turned interviews into content engine",
-    hook: "One interview can fuel a month of content.",
-    context: "I struggled to post consistently until I systemized repurposing.",
-    conflict: "Ideas stayed stuck as long transcripts.",
-    turning_point: "I built a simple story bank from interviews.",
-    resolution: "Now each interview yields posts, carousels and short scripts.",
-    moral: "System beats motivation for creators.",
-    cta: "Comment 'STORY' to get the template.",
-    tags: ["repurposing","creator"],
-    platform_tags: ["LinkedIn","Instagram","TikTok"],
-    score: 0.86,
-    platform: "LinkedIn",
-    color: "bg-gradient-to-br from-blue-600 to-blue-700"
-  };
-  return [
-    base, 
-    { 
-      ...base, 
-      id: "s2", 
-      title: "The 3-step story bank workflow", 
-      hook: "Three steps unlock infinite stories.",
-      platform: "Instagram",
-      color: "bg-gradient-to-br from-pink-500 to-purple-600"
+  const mockStories: Story[] = [
+    {
+      id: '1',
+      histoire: 'Mon premier échec entrepreneurial',
+      conflit: 'J\'ai perdu tous mes économies en 3 mois',
+      message: 'L\'échec m\'a appris la valeur de la validation marché',
+      platform: 'LinkedIn',
+      color: '#2563EB',
+      tags: ['entrepreneuriat', 'échec', 'apprentissage']
+    },
+    {
+      id: '2',
+      histoire: 'Le client qui a changé ma vision',
+      conflit: 'Un client mécontent m\'a envoyé un email cinglant',
+      message: 'Écouter les critiques nous fait grandir',
+      platform: 'Instagram',
+      color: '#EC4899',
+      tags: ['service client', 'croissance', 'feedback']
     }
   ];
+
+  return mockStories;
 }

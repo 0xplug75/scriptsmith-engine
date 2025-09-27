@@ -43,7 +43,7 @@ export default function OutputTabs() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${selectedStory.title.toLowerCase().replace(/\s+/g, '-')}-content.json`;
+    a.download = `${selectedStory.histoire.toLowerCase().replace(/\s+/g, '-')}-content.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -70,14 +70,16 @@ export default function OutputTabs() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => setActiveTab('story-bank')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Stories
-            </Button>
-          </div>
-          <h2 className="text-2xl font-bold text-foreground">{selectedStory.title}</h2>
-          <p className="text-accent font-medium">"{selectedStory.hook}"</p>
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => setActiveTab('story-bank')}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Stories
+          </Button>
+        </div>
+          <h2 className="text-2xl font-bold text-foreground">{selectedStory.histoire}</h2>
+          {selectedStory.message && (
+            <p className="text-accent font-medium">"{selectedStory.message}"</p>
+          )}
         </div>
         
         <div className="flex gap-2">

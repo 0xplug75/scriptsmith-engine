@@ -39,7 +39,7 @@ export default function StoryCard({
   const [editing, setEditing] = useState(false);
 
   const handleCopyStory = async () => {
-    const fullText = `${story.title}\n\nHook: ${story.hook}\nContext: ${story.context}\nConflict: ${story.conflict}\nTurning Point: ${story.turning_point}\nResolution: ${story.resolution}\nMoral: ${story.moral}\nCTA: ${story.cta}`;
+    const fullText = `Histoire: ${story.histoire}\n\nConflit: ${story.conflit}\n\nMessage: ${story.message}`;
     
     try {
       await navigator.clipboard.writeText(fullText);
@@ -67,11 +67,11 @@ export default function StoryCard({
       
       <input
         className="flex-1 bg-transparent outline-none placeholder-white/70 text-sm font-medium"
-        value={story.title}
+        value={story.histoire}
         onFocus={() => setEditing(true)}
         onBlur={() => setEditing(false)}
-        onChange={(e) => onEdit && onEdit({ ...story, title: e.target.value })}
-        placeholder="Nouvelle idée…"
+        onChange={(e) => onEdit && onEdit({ ...story, histoire: e.target.value })}
+        placeholder="Nouvelle histoire…"
       />
       
       <select

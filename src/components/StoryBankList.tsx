@@ -160,7 +160,7 @@ export default function StoryBankList() {
   };
 
   const copyStory = async (story: Story) => {
-    const text = `${story.title}\n\n${story.hook}\n\n${story.context} ${story.conflict} ${story.turning_point} ${story.resolution}\n\n${story.moral}\n\n${story.cta}`;
+    const text = `Histoire: ${story.histoire}\n\nConflit: ${story.conflit}\n\nMessage: ${story.message}`;
     try {
       await navigator.clipboard.writeText(text);
       toast({
@@ -175,17 +175,10 @@ export default function StoryBankList() {
   const addNewStory = () => {
     const newStory: Story = {
       id: `story-${Date.now()}`,
-      title: "Nouvelle histoire",
-      hook: "Un hook captivant...",
-      context: "Le contexte de l'histoire...",
-      conflict: "Le conflit rencontré...",
-      turning_point: "Le moment décisif...",
-      resolution: "La résolution...",
-      moral: "La leçon apprise...",
-      cta: "Votre appel à l'action...",
+      histoire: "Nouvelle histoire",
+      conflit: "",
+      message: "",
       tags: ["nouveau"],
-      platform_tags: ["LinkedIn"],
-      score: 75,
       platform: "LinkedIn",
       color: PLATFORM_COLORS.LinkedIn
     };
@@ -210,7 +203,7 @@ export default function StoryBankList() {
     const duplicatedStory: Story = {
       ...story,
       id: `story-${Date.now()}`,
-      title: `${story.title} (copie)`
+      histoire: `${story.histoire} (copie)`
     };
     
     setStoryBank([...storyBank, duplicatedStory]);
@@ -267,7 +260,7 @@ export default function StoryBankList() {
           </Badge>
           <Badge variant="outline" className="gap-1">
             <Star className="w-3 h-3" />
-            Avg Score: {storyBank.length > 0 ? Math.round(storyBank.reduce((acc, story) => acc + (story.score || 0), 0) / storyBank.length) : 0}
+            Avg Score: N/A
           </Badge>
         </div>
         
@@ -311,42 +304,30 @@ export default function StoryBankList() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <CardTitle className="text-lg leading-tight">{story.title}</CardTitle>
-                      <p className="text-accent font-medium mt-1">"{story.hook}"</p>
+                      <CardTitle className="text-lg leading-tight">{story.histoire}</CardTitle>
+                      {story.message && (
+                        <p className="text-accent font-medium mt-1">"{story.message}"</p>
+                      )}
                     </div>
-                    {story.score && (
-                      <Badge variant="outline" className="shrink-0">
-                        <Star className="w-3 h-3 mr-1" />
-                        {story.score}
-                      </Badge>
-                    )}
+                    <Badge variant="outline" className="shrink-0">
+                      {story.platform}
+                    </Badge>
                   </div>
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
                   <div className="space-y-2 text-sm">
-                    <p><strong>Context:</strong> {story.context}</p>
-                    <p><strong>Conflict:</strong> {story.conflict}</p>
-                    <p><strong>Resolution:</strong> {story.resolution}</p>
-                    <p className="text-success"><strong>Moral:</strong> {story.moral}</p>
-                  </div>
-
-                  {/* Platform Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {story.platform_tags.map(platform => (
-                      <Badge 
-                        key={platform} 
-                        variant="outline" 
-                        className={PLATFORM_BADGE_COLORS[platform]}
-                      >
-                        {platform}
-                      </Badge>
-                    ))}
+                    {story.conflit && (
+                      <p><strong>Conflit:</strong> {story.conflit}</p>
+                    )}
+                    {story.message && (
+                      <p><strong>Message:</strong> {story.message}</p>
+                    )}
                   </div>
 
                   {/* Story Tags */}
                   <div className="flex flex-wrap gap-1">
-                    {story.tags.slice(0, 4).map(tag => (
+                      {story.tags?.slice(0, 4).map(tag => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>

@@ -2,12 +2,8 @@ export type Platform = "Instagram" | "LinkedIn" | "TikTok" | "YouTube" | "Generi
 
 export type UserProfile = {
   name: string;
-  short_bio: string;
-  tone: "serious" | "punchy" | "friendly" | "bold";
-  objectives: string[];
-  platforms: ("LinkedIn" | "Instagram" | "TikTok")[];
-  cv_url?: string;
-  assets?: string[];
+  role?: string;
+  platforms: Platform[];
 };
 
 export type TranscriptChunk = {
@@ -18,6 +14,17 @@ export type TranscriptChunk = {
 };
 
 export type Story = {
+  id: string;
+  histoire: string;   // main scene/description
+  conflit: string;    // tension/blocker
+  message: string;    // lesson/insight
+  platform: Platform;
+  color: string;
+  tags?: string[];
+};
+
+// Legacy story type for migration
+export type LegacyStory = {
   id: string;
   title: string;
   hook: string;
