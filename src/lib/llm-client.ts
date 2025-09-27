@@ -9,15 +9,36 @@ interface LLMCallParams {
 }
 
 const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
-const API_KEY = process.env.GEMINI_API_KEY; // Managed through Lovable secrets
+
+// For client-side usage, we'll need the API key to be provided
+let GEMINI_API_KEY: string | null = null;
+
+export function setGeminiApiKey(apiKey: string) {
+  GEMINI_API_KEY = apiKey;
+  localStorage.setItem('gemini_api_key', apiKey);
+}
+
+export function getGeminiApiKey(): string | null {
+  if (GEMINI_API_KEY) return GEMINI_API_KEY;
+  
+  const stored = localStorage.getItem('gemini_api_key');
+  if (stored) {
+    GEMINI_API_KEY = stored;
+    return stored;
+  }
+  
+  return null;
+}
 
 export async function llmCall({ model, system, user, temperature = 0.7 }: LLMCallParams): Promise<string> {
-  if (!API_KEY) {
-    throw new Error('GEMINI_API_KEY is not configured. Please set up your API key in secrets.');
+  const apiKey = getGeminiApiKey();
+  
+  if (!apiKey) {
+    throw new Error('Gemini API key not configured. Please add your API key in settings.');
   }
 
   try {
-    const response = await fetch(`${API_ENDPOINT}/${model}:generateContent?key=${API_KEY}`, {
+    const response = await fetch(`${API_ENDPOINT}/${model}:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
