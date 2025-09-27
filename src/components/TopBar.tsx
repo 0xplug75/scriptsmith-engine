@@ -1,43 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/lib/store";
-import { getGeminiApiKey, setGeminiApiKey } from "@/lib/llm-client";
-import { Download, Sparkles, Settings } from "lucide-react";
-import { useState, useEffect } from "react";
-import { toast } from "@/hooks/use-toast";
+import { Download, Sparkles } from "lucide-react";
+import { useState } from "react";
 
 export default function TopBar() {
   const [model, setModel] = useState<'gemini-1.5-pro' | 'gemini-1.5-flash'>('gemini-1.5-pro');
-  const [apiKey, setApiKey] = useState('');
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const { storyBank, outputsByStoryId, profile, transcript, reset } = useAppStore();
-
-  useEffect(() => {
-    const existingKey = getGeminiApiKey();
-    if (existingKey) {
-      setApiKey(existingKey);
-    }
-  }, []);
-
-  const handleSaveApiKey = () => {
-    if (apiKey.trim()) {
-      setGeminiApiKey(apiKey.trim());
-      setSettingsOpen(false);
-      toast({
-        title: "API Key saved",
-        description: "Gemini API key has been configured successfully"
-      });
-    } else {
-      toast({
-        title: "Invalid API Key",
-        description: "Please enter a valid API key",
-        variant: "destructive"
-      });
-    }
-  };
 
   const exportData = () => {
     const data = {
@@ -85,51 +54,6 @@ export default function TopBar() {
                 </SelectContent>
               </Select>
             </div>
-
-            <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Settings className="w-4 h-4" />
-                  Settings
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>API Configuration</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="apiKey">Gemini API Key</Label>
-                    <Input
-                      id="apiKey"
-                      type="password"
-                      placeholder="Enter your Gemini API key"
-                      value={apiKey}
-                      onChange={(e) => setApiKey(e.target.value)}
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Get your API key from{" "}
-                      <a 
-                        href="https://aistudio.google.com/app/apikey" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        Google AI Studio
-                      </a>
-                    </p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setSettingsOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSaveApiKey}>
-                      Save API Key
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
 
             <Button 
               variant="outline" 
