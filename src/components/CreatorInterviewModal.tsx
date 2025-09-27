@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Mic, Upload, Wand2, BookOpen, ChevronLeft, X } from 'lucide-react';
+import { FileText, Mic, Upload, Wand2, BookOpen, ChevronLeft, X, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { useAppStore } from '@/lib/store';
 import { llmCall, safeJSON } from '@/lib/llm-client';
 import type { Story } from '@/lib/schemas';
 import { toast } from '@/hooks/use-toast';
+import TextInfoModal from './TextInfoModal';
 
 
 interface CreatorInterviewModalProps {
@@ -36,6 +37,7 @@ export default function CreatorInterviewModal({ open, onOpenChange }: CreatorInt
   const [generatedStories, setGeneratedStories] = useState<Story[]>([]);
   const [selectedStories, setSelectedStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showTextInfo, setShowTextInfo] = useState(false);
 
   const hydrateStory = (storyData: any): Story => ({
     id: `story-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -203,7 +205,20 @@ export default function CreatorInterviewModal({ open, onOpenChange }: CreatorInt
                 <CardContent className="p-4 text-center space-y-3">
                   <FileText className="h-8 w-8 mx-auto text-primary" />
                   <div>
-                    <h3 className="font-semibold">Texte</h3>
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <h3 className="font-semibold">Texte</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowTextInfo(true);
+                        }}
+                        className="h-5 w-5 p-0 hover:bg-primary/10"
+                      >
+                        <Info className="h-3 w-3 text-primary" />
+                      </Button>
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       Interview écrite, expériences, anecdotes
                     </p>
@@ -429,6 +444,10 @@ export default function CreatorInterviewModal({ open, onOpenChange }: CreatorInt
           </div>
         )}
       </DialogContent>
+      <TextInfoModal 
+        open={showTextInfo}
+        onOpenChange={setShowTextInfo}
+      />
     </Dialog>
   );
 }
