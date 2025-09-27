@@ -1,3 +1,5 @@
+export type Platform = "Instagram" | "LinkedIn" | "TikTok" | "YouTube" | "Generic";
+
 export type UserProfile = {
   name: string;
   short_bio: string;
@@ -28,7 +30,11 @@ export type Story = {
   tags: string[];
   platform_tags: ("LinkedIn" | "Instagram" | "TikTok")[];
   score?: number;
+  platform: Platform;
+  color: string;
 };
+
+export type Assignment = Record<string, string[]>;
 
 export type Outputs = {
   linkedin?: string;

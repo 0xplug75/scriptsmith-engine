@@ -13,7 +13,19 @@ export function generateStoryBankMock(profile: any, transcript_text: string): St
     cta: "Comment 'STORY' to get the template.",
     tags: ["repurposing","creator"],
     platform_tags: ["LinkedIn","Instagram","TikTok"],
-    score: 0.86
+    score: 0.86,
+    platform: "LinkedIn",
+    color: "bg-gradient-to-br from-blue-600 to-blue-700"
   };
-  return [base, { ...base, id: "s2", title: "The 3-step story bank workflow", hook: "Three steps unlock infinite stories." }];
+  return [
+    base, 
+    { 
+      ...base, 
+      id: "s2", 
+      title: "The 3-step story bank workflow", 
+      hook: "Three steps unlock infinite stories.",
+      platform: "Instagram",
+      color: "bg-gradient-to-br from-pink-500 to-purple-600"
+    }
+  ];
 }

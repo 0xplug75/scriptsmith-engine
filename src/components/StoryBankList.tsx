@@ -3,12 +3,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAppStore } from "@/lib/store";
 import { llmCall, safeJSON, STORY_ENGINE_SYSTEM, REPURPOSE_ENGINE_SYSTEM } from "@/lib/llm-client";
-import { useEffect } from "react";
-import { Sparkles, Star, Copy, Edit, ExternalLink, Zap, BookOpen, Target } from "lucide-react";
-import type { Story, Outputs } from "@/lib/schemas";
+import { useEffect, useState } from "react";
+import { Sparkles, Star, Copy, Edit, ExternalLink, Zap, BookOpen, Target, Trash2, Plus } from "lucide-react";
+import type { Story, Outputs, Platform } from "@/lib/schemas";
 import { useToast } from "@/hooks/use-toast";
+import StoryCard from "./StoryCard";
+import StoryBankDropZone from "./StoryBankDropZone";
 
 const PLATFORM_COLORS = {
+  Instagram: "bg-gradient-to-br from-pink-500 to-purple-600",
+  LinkedIn: "bg-gradient-to-br from-blue-600 to-blue-700",
+  TikTok: "bg-gradient-to-br from-black to-red-500",
+  YouTube: "bg-gradient-to-br from-red-500 to-red-600",
+  Generic: "bg-gradient-to-br from-gray-500 to-gray-600"
+};
+
+const PLATFORM_BADGE_COLORS = {
   LinkedIn: "bg-blue-500/10 text-blue-700 border-blue-200",
   Instagram: "bg-pink-500/10 text-pink-700 border-pink-200", 
   TikTok: "bg-purple-500/10 text-purple-700 border-purple-200"
@@ -20,6 +30,7 @@ export default function StoryBankList() {
     transcript, 
     storyBank, 
     setStoryBank, 
+    updateStory,
     outputsByStoryId,
     setOutputs,
     loading, 
@@ -31,6 +42,7 @@ export default function StoryBankList() {
   } = useAppStore();
   
   const { toast } = useToast();
+  const [editingStory, setEditingStory] = useState<string | null>(null);
 
   // Generate story bank on component mount if not already generated
   useEffect(() => {
@@ -75,10 +87,12 @@ export default function StoryBankList() {
 
       const stories = safeJSON<Story[]>(response);
       
-      // Add scores (simple heuristic for demo)
-      const scoredStories = stories.map(story => ({
+      // Add scores, platform, and color (simple heuristic for demo)
+      const scoredStories = stories.map((story, index) => ({
         ...story,
-        score: Math.floor(Math.random() * 30) + 70 // 70-99 range
+        score: Math.floor(Math.random() * 30) + 70, // 70-99 range
+        platform: (["LinkedIn", "Instagram", "TikTok", "YouTube", "Generic"][index % 5]) as Platform,
+        color: PLATFORM_COLORS[(["LinkedIn", "Instagram", "TikTok", "YouTube", "Generic"][index % 5]) as Platform]
       }));
 
       setStoryBank(scoredStories);
@@ -145,12 +159,64 @@ export default function StoryBankList() {
     }
   };
 
-  const copyStory = (story: Story) => {
+  const copyStory = async (story: Story) => {
     const text = `${story.title}\n\n${story.hook}\n\n${story.context} ${story.conflict} ${story.turning_point} ${story.resolution}\n\n${story.moral}\n\n${story.cta}`;
-    navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copied to clipboard",
+        description: "Story text copied successfully"
+      });
+    } catch {
+      alert(text);
+    }
+  };
+
+  const addNewStory = () => {
+    const newStory: Story = {
+      id: `story-${Date.now()}`,
+      title: "Nouvelle histoire",
+      hook: "Un hook captivant...",
+      context: "Le contexte de l'histoire...",
+      conflict: "Le conflit rencontré...",
+      turning_point: "Le moment décisif...",
+      resolution: "La résolution...",
+      moral: "La leçon apprise...",
+      cta: "Votre appel à l'action...",
+      tags: ["nouveau"],
+      platform_tags: ["LinkedIn"],
+      score: 75,
+      platform: "LinkedIn",
+      color: PLATFORM_COLORS.LinkedIn
+    };
+    
+    setStoryBank([...storyBank, newStory]);
+    setEditingStory(newStory.id);
+  };
+
+  const handleEditStory = (updatedStory: Story) => {
+    updateStory(updatedStory);
+  };
+
+  const handleDeleteStory = (storyId: string) => {
+    setStoryBank(storyBank.filter(story => story.id !== storyId));
     toast({
-      title: "Copied to clipboard",
-      description: "Story text copied successfully"
+      title: "Story deleted",
+      description: "Story removed from your bank"
+    });
+  };
+
+  const handleDuplicateStory = (story: Story) => {
+    const duplicatedStory: Story = {
+      ...story,
+      id: `story-${Date.now()}`,
+      title: `${story.title} (copie)`
+    };
+    
+    setStoryBank([...storyBank, duplicatedStory]);
+    toast({
+      title: "Story duplicated",
+      description: "New copy added to your bank"
     });
   };
 
@@ -189,7 +255,7 @@ export default function StoryBankList() {
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold text-foreground">Your Story Bank</h2>
         <p className="text-lg text-muted-foreground">
-          {storyBank.length} compelling stories extracted from your interview
+          {storyBank.length} compelling stories ready for your content calendar
         </p>
       </div>
 
@@ -201,119 +267,149 @@ export default function StoryBankList() {
           </Badge>
           <Badge variant="outline" className="gap-1">
             <Star className="w-3 h-3" />
-            Avg Score: {Math.round(storyBank.reduce((acc, story) => acc + (story.score || 0), 0) / storyBank.length)}
+            Avg Score: {storyBank.length > 0 ? Math.round(storyBank.reduce((acc, story) => acc + (story.score || 0), 0) / storyBank.length) : 0}
           </Badge>
         </div>
         
-        <Button variant="outline" onClick={generateStoryBank} disabled={loading}>
-          <Sparkles className="w-4 h-4 mr-2" />
-          Regenerate
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={addNewStory}>
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter
+          </Button>
+          <Button variant="outline" onClick={generateStoryBank} disabled={loading}>
+            <Sparkles className="w-4 h-4 mr-2" />
+            Regenerate
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Story Cards Grid with Drop Zone */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Drop Zone */}
+        <StoryBankDropZone onAddStory={addNewStory} />
+        
+        {/* Story Cards */}
         {storyBank.map((story) => (
-          <Card key={story.id} className="shadow-elegant-md hover:shadow-elegant-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <CardTitle className="text-lg leading-tight">{story.title}</CardTitle>
-                  <p className="text-accent font-medium mt-1">"{story.hook}"</p>
-                </div>
-                {story.score && (
-                  <Badge variant="outline" className="shrink-0">
-                    <Star className="w-3 h-3 mr-1" />
-                    {story.score}
-                  </Badge>
-                )}
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              <div className="space-y-2 text-sm">
-                <p><strong>Context:</strong> {story.context}</p>
-                <p><strong>Conflict:</strong> {story.conflict}</p>
-                <p><strong>Resolution:</strong> {story.resolution}</p>
-                <p className="text-success"><strong>Moral:</strong> {story.moral}</p>
-              </div>
-
-              {/* Platform Tags */}
-              <div className="flex flex-wrap gap-2">
-                {story.platform_tags.map(platform => (
-                  <Badge 
-                    key={platform} 
-                    variant="outline" 
-                    className={PLATFORM_COLORS[platform]}
-                  >
-                    {platform}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Story Tags */}
-              <div className="flex flex-wrap gap-1">
-                {story.tags.slice(0, 4).map(tag => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Actions */}
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => generateOutput(story, 'linkedin')}
-                  disabled={loading}
-                  className="gap-1"
-                >
-                  LinkedIn Post
-                </Button>
-                
-                <Button
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => generateOutput(story, 'instagram')}
-                  disabled={loading}
-                  className="gap-1"
-                >
-                  IG Carousel
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  size="sm" 
-                  onClick={() => generateOutput(story, 'tiktok')}
-                  disabled={loading}
-                  className="gap-1"
-                >
-                  TikTok Script
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => copyStory(story)}
-                  className="gap-1"
-                >
-                  <Copy className="w-3 h-3" />
-                  Copy
-                </Button>
-              </div>
-
-              <Button
-                className="w-full bg-gradient-hero"
-                onClick={() => generateOutput(story, 'all')}
-                disabled={loading}
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                Generate All Formats
-              </Button>
-            </CardContent>
-          </Card>
+          <StoryCard
+            key={story.id}
+            story={story}
+            onEdit={handleEditStory}
+            onDelete={handleDeleteStory}
+            onDuplicate={handleDuplicateStory}
+            onGenerate={(story, format) => generateOutput(story, format as any)}
+          />
         ))}
       </div>
+
+      {/* Legacy detailed view for reference */}
+      {storyBank.length > 0 && (
+        <div className="mt-8 space-y-4">
+          <h3 className="text-xl font-semibold">Detailed Story View</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {storyBank.map((story) => (
+              <Card key={story.id} className="shadow-elegant-md hover:shadow-elegant-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg leading-tight">{story.title}</CardTitle>
+                      <p className="text-accent font-medium mt-1">"{story.hook}"</p>
+                    </div>
+                    {story.score && (
+                      <Badge variant="outline" className="shrink-0">
+                        <Star className="w-3 h-3 mr-1" />
+                        {story.score}
+                      </Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  <div className="space-y-2 text-sm">
+                    <p><strong>Context:</strong> {story.context}</p>
+                    <p><strong>Conflict:</strong> {story.conflict}</p>
+                    <p><strong>Resolution:</strong> {story.resolution}</p>
+                    <p className="text-success"><strong>Moral:</strong> {story.moral}</p>
+                  </div>
+
+                  {/* Platform Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {story.platform_tags.map(platform => (
+                      <Badge 
+                        key={platform} 
+                        variant="outline" 
+                        className={PLATFORM_BADGE_COLORS[platform]}
+                      >
+                        {platform}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  {/* Story Tags */}
+                  <div className="flex flex-wrap gap-1">
+                    {story.tags.slice(0, 4).map(tag => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => generateOutput(story, 'linkedin')}
+                      disabled={loading}
+                      className="gap-1"
+                    >
+                      LinkedIn Post
+                    </Button>
+                    
+                    <Button
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => generateOutput(story, 'instagram')}
+                      disabled={loading}
+                      className="gap-1"
+                    >
+                      IG Carousel
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm" 
+                      onClick={() => generateOutput(story, 'tiktok')}
+                      disabled={loading}
+                      className="gap-1"
+                    >
+                      TikTok Script
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copyStory(story)}
+                      className="gap-1"
+                    >
+                      <Copy className="w-3 h-3" />
+                      Copy
+                    </Button>
+                  </div>
+
+                  <Button
+                    className="w-full bg-gradient-hero"
+                    onClick={() => generateOutput(story, 'all')}
+                    disabled={loading}
+                  >
+                    <Zap className="w-4 h-4 mr-2" />
+                    Generate All Formats
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
